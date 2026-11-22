@@ -1,6 +1,6 @@
 # La banalità della dimostrazione: protocollo
 
-Versione 1.0, 22 novembre 2026. Scritto e registrato nel repository **prima delle corse**:
+Versione 1.1, 22 novembre 2026. Scritto e registrato nel repository **prima delle corse**:
 domande, materiali, misure, estimatori e soglie stanno qui, e ciò che cambierà dopo va nella
 sezione «Deviazioni» in fondo, con la data e il motivo. Lingua originale: italiano. Il progetto
 da cui nasce è `docs/design.it.md`.
@@ -62,8 +62,14 @@ Tre bracci, **otto spiegazioni per braccio e livello, 96 in tutto**:
 
 Il sistema e l'istruzione sono uguali per tutti (`prompts/explain_system.it.md`,
 `prompts/explain_task.it.md`); i due bracci «overview» ricevono lo stesso identico testo
-(`banalita.requests.overview_prompt_text`). Le chiamate a Claude passano dalla Batch API, con
-le fonti in cache (TTL di un'ora).
+(`banalita.requests.overview_prompt_text`). Le chiamate a Claude passano da Claude Code senza
+interfaccia (`claude -p`, `banalita.claude_code`), isolate: nessuno strumento, il prompt di
+sistema dell'esperimento al posto di quello di Claude Code, nessuna impostazione, nessun server
+MCP, ambiente minimo; i PDF arrivano come documenti, l'uscita del giudice e del critico è JSON
+vincolato con `--json-schema`. Le fonti stanno in cache (TTL di un'ora): la prima chiamata di
+ogni gruppo con lo stesso prefisso parte da sola. Una risposta che nomina file di progetto o
+memorie è scartata come «contaminated». La Batch API (`--backend api`) dà le stesse richieste
+a chi rifà l'esperimento con una chiave.
 
 ## 5. Misure
 
@@ -119,12 +125,21 @@ saranno larghi: si dice.
 
 ## 8. Spesa e ordine delle corse
 
-Tetto di **60 dollari** per le chiamate a Claude, prova pilota compresa; il registro è
-`results/spend.jsonl`, e ogni fase si ferma prima di superarlo. Ordine: pilota (fuori dai
-risultati) → spiegazioni di Claude → spiegazioni di Qwen (quando la L4 è libera) → giudizi →
+Con Claude Code non si paga a token: il registro `results/spend.jsonl` riporta il costo a
+listino di ogni chiamata, e un freno di 150 dollari a listino ferma le corse prima che il
+consumo dell'abbonamento esca di misura (stima di tutte le fasi: circa 70-90 dollari a
+listino). Ordine: pilota (fuori dai risultati) → spiegazioni di Claude → spiegazioni di Qwen (quando la L4 è libera) → giudizi →
 critici → verifiche → secondo giudice → NLI → etichette dell'autore → resoconto.
 
 ## 9. Deviazioni
 
 - 22/11/2026, prima delle corse: F2 è la versione del 22 novembre (73 pagine), uscita mentre il
   progetto era in scrittura; la panoramica va da pagina 3 a pagina 14.
+- 22/11/2026, prima delle corse (versione 1.1): le chiamate a Claude passano da Claude Code con
+  l'abbonamento invece che dalla Batch API con una chiave, su richiesta dell'autore; stesso
+  modello, stesse richieste. Il tetto di 60 dollari reali diventa un freno di 150 dollari a
+  listino.
+- 22/11/2026, prova pilota (fuori dai risultati): quattro spiegazioni e due giudizi, tutti
+  riusciti, 8,11 dollari a listino; la nota di Zhang in PDF vale circa 208.000 token. Nessuna
+  chiamata ha letto la cache, perché le chiamate con lo stesso prefisso partivano insieme: da
+  qui la prima chiamata da sola. Lunghezze entro i limiti (302 parole su 300 a L1).

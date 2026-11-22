@@ -14,6 +14,7 @@ dichiara a ogni chiamata (con l'abbonamento non si paga a token: misura il consu
 """
 from __future__ import annotations
 
+import hashlib
 import json
 import os
 import subprocess
@@ -86,6 +87,13 @@ def run_one(custom_id: str, params: dict, timeout: int = TIMEOUT) -> Result:
     return parse_output(custom_id, r.stdout)
 
 
+def prefix_key(params: dict) -> str:
+    """Che cosa la cache condivide: modello, sistema e tutti i blocchi tranne l'ultimo."""
+    head = {"model": params["model"], "system": params["system"],
+            "content": params["messages"][0]["content"][:-1]}
+    return hashlib.sha256(json.dumps(head, sort_keys=True, ensure_ascii=False).encode()).hexdigest()
+
+
 def _done(out: Path) -> dict[str, Result]:
     if not out.exists():
         return {}
@@ -117,7 +125,14 @@ def run_claude_code(requests: dict[str, dict], phase: str, ledger: Ledger, out: 
                 f.write(res.to_json() + "\n")
         return res
 
+    # La prima chiamata di ogni prefisso scrive la cache da sola, prima delle altre del gruppo:
+    # partite insieme, la scriverebbero tutte (208.000 token ciascuna con la nota di Zhang).
+    groups: dict[str, list] = {}
+    for item in todo.items():
+        groups.setdefault(prefix_key(item[1]), []).append(item)
     with ThreadPoolExecutor(max_workers=workers) as pool:
-        for res in pool.map(work, todo.items()):
+        for res in pool.map(work, [g[0] for g in groups.values()]):
+            results[res.custom_id] = res
+        for res in pool.map(work, [it for g in groups.values() for it in g[1:]]):
             results[res.custom_id] = res
     return results

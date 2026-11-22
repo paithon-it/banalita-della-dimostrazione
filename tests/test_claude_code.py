@@ -91,3 +91,31 @@ def test_resume_skips_done_and_records_spend(tmp_path):
     assert set(res) == {"a", "b"}
     assert led.spent() == 4.0  # costo a listino, senza sconto batch
     assert len(out.read_text().splitlines()) == 2
+
+
+def test_first_call_of_each_prefix_runs_alone(tmp_path):
+    """La prima chiamata di ogni gruppo con lo stesso prefisso scrive la cache da sola; le altre
+    del gruppo partono solo dopo, per leggerla."""
+    import threading
+    import time
+    from banalita.claude_code import prefix_key
+    events, lock = [], threading.Lock()
+
+    def fake(cid, params, timeout):
+        with lock:
+            events.append(("start", cid))
+        time.sleep(0.05)
+        with lock:
+            events.append(("end", cid))
+        return Result(cid, "succeeded", "y", None, {}, "end_turn")
+
+    other = {**PARAMS, "system": [{"type": "text", "text": "Altro sistema."}]}
+    reqs = {"a1": PARAMS, "a2": PARAMS, "a3": PARAMS, "b1": other, "b2": other}
+    run_claude_code(reqs, "x", Ledger(tmp_path / "s.jsonl", cap=1000), tmp_path / "o.jsonl", workers=3, runner=fake)
+    for first, rest in (("a1", ("a2", "a3")), ("b1", ("b2",))):
+        end_first = events.index(("end", first))
+        assert all(events.index(("start", r)) > end_first for r in rest)
+    assert prefix_key(PARAMS) != prefix_key(other)
+    last_block_changed = {**PARAMS, "messages": [{"role": "user", "content": PARAMS["messages"][0]["content"][:-1]
+                                                 + [{"type": "text", "text": "Diverso."}]}]}
+    assert prefix_key(PARAMS) == prefix_key(last_block_changed)
