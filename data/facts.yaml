@@ -1,0 +1,225 @@
+# Fatti di riferimento sulla dimostrazione di Alpöge (progetto, § 4).
+# Scritti da un'AI (Claude) leggendo F1, F2 (versione del 22/11/2026) e F3; ogni citazione è
+# letterale e controllata in modo meccanico sulla sua pagina (tests/test_facts.py), e un
+# secondo agente ne ha riscontrato il senso. Nessun matematico li ha rivisti.
+# min_level: 1 bambino, 2 liceo, 3 laureato in matematica, 4 teorico dei numeri.
+facts:
+  # --- Che cosa si dimostra ---
+  - id: S1
+    group: statement
+    min_level: 1
+    text: "La dimostrazione riguarda l'ipotesi di Riemann, il grande problema classico sui numeri primi e su come sono distribuiti."
+    source: F1
+    page: 1
+    quote: "The Riemann Hypothesis is the classic problem in number theory. It asks for optimal control on the count of prime numbers of a given size."
+  - id: S2
+    group: statement
+    min_level: 2
+    text: "L'ipotesi dice che certi zeri della funzione zeta di Riemann stanno tutti su una stessa retta, quella con parte reale 1/2 (la retta critica), e quegli zeri sono legati alla distribuzione dei primi."
+    source: F2
+    page: 3
+    quote: "In 1859 he used the assertion that the zeros in 0 < Re(s) < 1 lay on the critical line Re(s) = 1/2 as a working hypothesis."
+  - id: S3
+    group: statement
+    min_level: 2
+    text: "Si dimostra anche l'ipotesi generalizzata per le funzioni L di Dirichlet, quelle che contano i primi nelle progressioni aritmetiche, per tutti i moduli e tutti i caratteri."
+    source: F3b
+    page: 1
+    quote: "\"GRH\" here means Dirichlet L-functions: all moduli and all characters."
+
+  # --- Com'è fatta: l'architettura ---
+  - id: A1
+    group: architecture
+    min_level: 1
+    text: "La dimostrazione è lunghissima: lo dice lo stesso Alpöge."
+    source: F1
+    page: 1
+    quote: "The argument is incredibly long at the moment"
+  - id: A2
+    group: architecture
+    min_level: 2
+    text: "La domanda sugli zeri si trasforma in una domanda su somme fatte sulle potenze dei numeri primi; se quelle somme non crescono troppo, zeri fuori dalla retta non ci possono essere."
+    source: F2
+    page: 4
+    quote: "A zero of L(s, χ) in the critical strip produces such a pole, so bounds for Sχ (x) can constrain the location of the zeros."
+  - id: A3
+    group: architecture
+    min_level: 3
+    text: "Basta maggiorare quelle somme dall'alto, all'incirca con la radice quadrata di x, e solo su intervalli che si spingono arbitrariamente lontano, non per ogni x."
+    source: F2
+    page: 5
+    quote: "Notice that Proposition 1.2 bounds Gψ only from above; the function itself may take either sign."
+  - id: A4
+    group: architecture
+    min_level: 3
+    text: "La maggiorazione nasce da un principio di aritmetica, la formula del prodotto, nella forma in cui la usa la dimostrazione: un intero algebrico non nullo molto divisibile non può essere piccolo in tutte le sue grandezze reali."
+    source: F2
+    page: 5
+    quote: "if a nonzero algebraic integer is highly divisible at finite primes, its archimedean absolute values cannot all be small."
+  - id: A5
+    group: architecture
+    min_level: 3
+    text: "I numeri di cui si misurano divisibilità e grandezza sono periodi automorfi, integrali di forme automorfe; le somme sui primi compaiono nelle stime della loro divisibilità."
+    source: F2
+    page: 5
+    quote: "The sums over prime powers occur in lower bounds for the valuations of automorphic periods: integrals of automorphic forms, normalized to take values in a number field."
+  - id: A6
+    group: architecture
+    min_level: 3
+    text: "Il cuore è una catena di trasformazioni ripetute, i sollevamenti theta; ogni anello aggiunge un po' di «molteplicità», e la catena è lunga circa quanto la radice quadrata della grandezza in gioco."
+    source: F1
+    page: 1
+    quote: "length of chain of theta lifts, in view of each mimicking"
+  - id: A7
+    group: architecture
+    min_level: 3
+    text: "Il numero m di sollevamenti bilancia due errori, uno grande circa x/m e l'altro circa m; scegliendo m vicino alla radice di x tutti e due sono vicini alla radice di x, ed è da qui che viene l'esponente 1/2."
+    source: F2
+    page: 9
+    quote: "The two principal errors in the bound for Gψ (x) have sizes x/m and m,"
+  - id: A8
+    group: architecture
+    min_level: 3
+    text: "L'idea discende dal metodo di Stepanov, che dimostra l'analogo dell'ipotesi di Riemann in un mondo gemello, i campi di funzioni; sugli interi la «molteplicità» che quel metodo usa è difficile da trovare, e qui la forniscono i sollevamenti."
+    source: F1
+    page: 1
+    quote: "In Stepanov’s argument resolving Riemann over function fields one uses a divisor involving multiplicity. This argument is a descendant of Stepanov’s, but multiplicity is hard to find over the integers"
+
+  # --- Con che cosa: gli ingredienti ---
+  - id: I1
+    group: ingredients
+    min_level: 2
+    text: "Usa una quantità enorme di matematica, da molti campi diversi, molta più di quanto Alpöge si aspettasse."
+    source: F1
+    page: 1
+    quote: "An astounding amount of mathematics is present in the argument, far more than I had imagined would be necessary as a student."
+  - id: I2
+    group: ingredients
+    min_level: 4
+    text: "Le identità «a altalena» (seesaw) di Kudla collegano il periodo di partenza, un periodo di Bessel del tipo studiato da Gan, Gross e Prasad, ai periodi dopo i sollevamenti."
+    source: F2
+    page: 6
+    quote: "Kudla’s [Kud84] seesaw identities relate the initial Bessel period to the pairings after these lifts"
+  - id: I3
+    group: ingredients
+    min_level: 4
+    text: "Le norme dei sollevamenti si controllano con la formula di Rallis (e di Gan, Qiu e Takeda), che le esprime con valori speciali di funzioni L."
+    source: F2
+    page: 6
+    quote: "which express Petersson norms of theta lifts through special values of L-functions and local integrals."
+  - id: I4
+    group: ingredients
+    min_level: 4
+    text: "La normalizzazione dei periodi usa i periodi delle varietà abeliane con moltiplicazione complessa, legati alle derivate logaritmiche delle funzioni L di Dirichlet (Chowla e Selberg)."
+    source: F2
+    page: 6
+    quote: "The normalization of the automorphic periods uses periods of CM abelian varieties, whose relation to logarithmic derivatives of Dirichlet L-functions was studied by Chowla and Selberg [CS49] and Anderson [And82, §2]."
+  - id: I5
+    group: ingredients
+    min_level: 4
+    text: "Per stimare i covolumi dei reticoli di forme automorfe entra la geometria aritmetica (geometria di Arakelov), con le formule di Hilbert-Samuel aritmetiche."
+    source: F2
+    page: 7
+    quote: "The arithmetic Hilbert–Samuel formulas of Gillet and Soulé [GS88] and Zhang [Zha95] relate the covolumes of lattices of integral sections to arithmetic self-intersection numbers."
+  - id: I6
+    group: ingredients
+    min_level: 3
+    text: "Entra perfino una costruzione di Behrend del 1946, insiemi grandi di interi senza progressioni aritmetiche di tre termini."
+    source: F2
+    page: 8
+    quote: "[Alp26] adapts Behrend’s [Beh46] construction of large sets of integers not containing any nonconstant three-term arithmetic progressions."
+  - id: I7
+    group: ingredients
+    min_level: 4
+    text: "I denominatori introdotti proiettando sugli autospazi di Hecke si controllano con le rappresentazioni di Galois, le deformazioni alla Wiles e Taylor-Wiles e la coomologia di Galois."
+    source: F2
+    page: 9
+    quote: "[Alp26] compares deformations of Galois representations with congruences between automorphic forms, following Wiles [Wil95], Taylor and Wiles [TW95], and Clozel, Harris, and Taylor [CHT08]."
+
+  # --- Come sta: lo stato ---
+  - id: T1
+    group: status
+    min_level: 1
+    text: "Alpöge ritiene di aver scoperto una dimostrazione lavorando insieme a un'intelligenza artificiale, Claude."
+    source: F1
+    page: 1
+    quote: "I believe I have, working with Claude, discovered a proof"
+  - id: T2
+    group: status
+    min_level: 1
+    text: "È scritta in un linguaggio che il computer può controllare passo per passo (Lean), ed è lunghissima, diciassette milioni di righe."
+    source: F3a
+    page: 1
+    quote: "Levent Alpöge released a proof of the Riemann Hypothesis as a Lean library comprising 17 million lines of code."
+  - id: T3
+    group: status
+    min_level: 1
+    text: "I controlli fatti con i computer l'hanno accettata, e le comunità di Lean e Mathlib ne certificano l'enunciato e la dimostrazione."
+    source: F3a
+    page: 1
+    quote: "We hereby certify that both the statement and the proof of the Riemann Hypothesis are correct."
+  - id: T4
+    group: status
+    min_level: 3
+    text: "La dimostrazione esportata è stata controllata da più verificatori indipendenti, scritti in linguaggi diversi, non solo dal kernel ufficiale di Lean."
+    source: F3a
+    page: 1
+    quote: "The exported raw proof has been checked by several proof checkers, including Lean’s official kernel, the con-leche and con-ron checkers, and several independent checkers contributed by third parties and implemented in different programming languages."
+  - id: T5
+    group: status
+    min_level: 2
+    text: "Alpöge stesso dice di presentare una dimostrazione completa prima di aver padroneggiato la matematica che la circonda; ha pubblicato solo la versione in Lean, non le oltre 250.000 pagine di esposizione prodotte con Claude."
+    source: F1
+    page: 2
+    quote: "I am presenting the world with a complete argument before having mastered a massive neighbourhood around its mathematics."
+  - id: T6
+    group: status
+    min_level: 2
+    text: "Alpöge si aspetta che la dimostrazione venga semplificata molto, e presto."
+    source: F1
+    page: 1
+    quote: "My intuition insists it will be massively simplified, likely immediately."
+  - id: T9
+    group: status
+    min_level: 2
+    text: "Secondo Alpöge, nel tratto finale Claude è andato molto più veloce di lui; la lunghezza giusta della catena di sollevamenti l'ha suggerita Claude."
+    source: F1
+    page: 1
+    quote: "Claude far outpaced me near the finish line"
+  - id: T8
+    group: status
+    min_level: 3
+    text: "C'è un controllo che non dipende dalla definizione della funzione zeta in Mathlib, attraverso i criteri di Robin e di Lagarias, disuguaglianze sulla somma dei divisori."
+    source: F3b
+    page: 1
+    quote: "As a check that does not depend on Mathlib's definition of the zeta function, the proof was combined with kimihiro64/Robin1984"
+
+  # --- Che cosa resta fuori: i limiti ---
+  - id: L1
+    group: limits
+    min_level: 2
+    text: "Il controllo al computer dice che il teorema è vero, non spiega le idee; la comunità aspetta che siano i matematici a spiegarle."
+    source: F3a
+    page: 1
+    quote: "We look forward to all the activity in the mathematical community that will help explain the new ideas in this proof."
+  - id: L2
+    group: limits
+    min_level: 2
+    text: "La nota di Zhang è una ricostruzione leggibile che Zhang ha preparato facendo leggere il codice Lean a un'altra AI (GPT 6 Pro) e poi riscrivendone il risultato; Zhang non può garantire che sia fedele al codice, e dalla sezione 2 in poi è scritta in gran parte dall'AI."
+    source: F2
+    page: 2
+    quote: "I cannot claim that this summary is a faithful translation of the Lean code in [Alp26]"
+  - id: L3
+    group: limits
+    min_level: 3
+    text: "La portata è quella delle funzioni L di Dirichlet; altre funzioni L (di Dedekind, di Hecke, automorfe) non sono fra gli enunciati controllati."
+    source: F3b
+    page: 1
+    quote: "Dedekind zeta functions, Hecke L-functions and automorphic L-functions in general are not among the statements that were checked."
+  - id: L4
+    group: limits
+    min_level: 3
+    text: "Alpöge stesso avverte che nella dimostrazione possono esserci scelte strane e non ottimali, e che si aspetta argomenti brevi."
+    source: F1
+    page: 3
+    quote: "I may have baked lots of strange suboptimal choices into the argument, and expect short arguments to follow fairly quickly"
