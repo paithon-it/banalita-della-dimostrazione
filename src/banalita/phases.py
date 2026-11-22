@@ -12,9 +12,10 @@ from pathlib import Path
 from typing import Callable
 
 from banalita.batch import Result
+from banalita.critic import critic_request, verify_request
 from banalita.judge import judge_request
 from banalita.requests import LEVELS, custom_id, explain_request, parse_custom_id
-from banalita.sources import ROOT
+from banalita.sources import ROOT, load_sources, overview_text
 
 SAMPLES = 8
 SEED = 20261122
@@ -71,8 +72,46 @@ def build_judge2(results_dir: Path = RESULTS, n: int = 24, seed: int = SEED) -> 
             for r in chosen}
 
 
+SOURCE_ARM = "source_f2"
+SOURCE_SAMPLES = 3
+CRITIC_FILES = {"critic_claude.jsonl": "verify", "critic_qwen.jsonl": "verifyq"}
+
+
+def _source_text() -> str:
+    return overview_text(load_sources()["F2"].local)
+
+
+def build_critic(results_dir: Path = RESULTS) -> dict[str, dict]:
+    """Il critico su ogni spiegazione riuscita, e tre volte sulla panoramica di F2."""
+    reqs = {_judge_id("critic", r.custom_id): critic_request(r.custom_id, r.text) for r in explanations(results_dir)}
+    for s in range(SOURCE_SAMPLES):
+        cid = custom_id("critic", SOURCE_ARM, 4, s)
+        reqs[cid] = critic_request(cid, _source_text(), blinded=False)
+    return reqs
+
+
+def build_verify(results_dir: Path = RESULTS) -> dict[str, dict]:
+    """La verifica delle segnalazioni dei due critici; chi non ha segnalato niente non passa."""
+    texts = {_judge_id("x", r.custom_id): r.text for r in explanations(results_dir)}
+    reqs = {}
+    for fname, kind in CRITIC_FILES.items():
+        for r in load_results(Path(results_dir) / fname):
+            alerts = (r.parsed or {}).get("alerts") or []
+            if r.status != "succeeded" or not alerts:
+                continue
+            _, arm, level, sample = parse_custom_id(r.custom_id)
+            vid = custom_id(kind, arm, level, sample)
+            if arm == SOURCE_ARM:
+                reqs[vid] = verify_request(vid, _source_text(), alerts, blinded=False)
+            else:
+                reqs[vid] = verify_request(vid, texts[custom_id("x", arm, level, sample)], alerts)
+    return reqs
+
+
 PHASES: dict[str, Phase] = {
     "explain": Phase(build_explain, "explanations_claude.jsonl", input_tokens=8_000, expected_output_tokens=10_000),
     "judge": Phase(build_judge, "judgments.jsonl", input_tokens=9_000, expected_output_tokens=14_000),
     "judge2": Phase(build_judge2, "judgments2.jsonl", input_tokens=9_000, expected_output_tokens=14_000),
+    "critic": Phase(build_critic, "critic_claude.jsonl", input_tokens=1_500, expected_output_tokens=8_000),
+    "verify": Phase(build_verify, "verifications.jsonl", input_tokens=9_000, expected_output_tokens=8_000),
 }
