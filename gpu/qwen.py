@@ -20,11 +20,12 @@ from banalita.requests import LEVELS, PROMPTS, custom_id, overview_prompt_text, 
 
 MODEL = "cyankiwi/Qwen3.8-27B-AWQ-INT4"
 MAX_TOKENS = 12000
-# Sulla L4 (22 GiB) i pesi ne occupano 19: niente codificatore di immagini (l'esperimento usa
+# Sulla L4 (22 GiB) i pesi ne occupano 18,2: niente codificatore di immagini (l'esperimento usa
 # solo il testo), prefill a lotti piccoli, due sequenze alla volta. Il modello è ibrido (16
-# strati di attenzione piena su 64): in fp8 la cache vale circa 32 KB per token.
-LLM_ARGS = dict(model=MODEL, max_model_len=32768, max_num_seqs=2, max_num_batched_tokens=2048,
-                gpu_memory_utilization=0.95, language_model_only=True,
+# strati di attenzione piena su 64), e la cache vale circa 41 KB per token. Il prompt vale
+# 11.798 token: 24.576 lasciano spazio a MAX_TOKENS.
+LLM_ARGS = dict(model=MODEL, max_model_len=24576, max_num_seqs=2, max_num_batched_tokens=1024,
+                gpu_memory_utilization=0.97, language_model_only=True,
                 enable_prefix_caching=True, enforce_eager=True, kv_cache_dtype="fp8")
 # I valori consigliati per Qwen3 con il ragionamento acceso.
 SAMPLING = dict(temperature=0.6, top_p=0.95, top_k=20, max_tokens=MAX_TOKENS)

@@ -84,14 +84,16 @@ def test_vllm_loads_text_only_and_fits_the_l4():
     sulla L4 (pesi 19,07 GiB su 22). L'esperimento usa solo il testo."""
     from gpu.qwen import LLM_ARGS
     assert LLM_ARGS["language_model_only"] is True
-    assert LLM_ARGS["max_num_batched_tokens"] <= 2048
+    assert LLM_ARGS["max_num_batched_tokens"] <= 1024
+    assert LLM_ARGS["max_model_len"] <= 24576  # 32.768 non entrava: 1,32 GiB di cache contro 0,98
     assert LLM_ARGS["max_num_seqs"] <= 2
 
 
 def test_context_leaves_room_for_prompt_and_full_output():
-    """Il prompt di qwen_overview vale circa 17.000 token: deve restarne spazio per MAX_TOKENS."""
+    """Il prompt di qwen_overview vale 11.798 token con il tokenizer di Qwen (misurato il
+    22/11/2026, L4): deve restare spazio per MAX_TOKENS."""
     from gpu.qwen import LLM_ARGS, MAX_TOKENS
-    assert LLM_ARGS["max_model_len"] - MAX_TOKENS >= 20000
+    assert LLM_ARGS["max_model_len"] - MAX_TOKENS >= 11798
 
 
 def test_setup_installs_precompiled_kernels():
