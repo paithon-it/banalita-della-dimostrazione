@@ -43,11 +43,14 @@ def test_command_adds_json_schema_only_with_format():
     assert "--json-schema" not in build_command(plain)
 
 
-def test_stdin_strips_cache_control_keeps_documents():
+def test_stdin_keeps_cache_control_and_documents():
+    """Claude Code mette da solo il punto di cache in fondo al messaggio: senza il cache_control
+    sulle fonti, i giudizi (diversi solo nell'ultimo blocco) non riusano mai la cache (provato
+    il 22/11/2026: 220.000 token riscritti per giudizio)."""
     msg = json.loads(build_stdin(PARAMS))
     blocks = msg["message"]["content"]
     assert msg["type"] == "user" and blocks[0]["type"] == "document"
-    assert all("cache_control" not in b for b in blocks)
+    assert blocks[0]["cache_control"] == {"type": "ephemeral", "ttl": "1h"}
     assert blocks[0]["source"]["data"] == "QUJD"
 
 

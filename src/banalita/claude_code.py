@@ -52,7 +52,9 @@ def build_command(params: dict) -> list[str]:
 
 
 def build_stdin(params: dict) -> str:
-    content = [{k: v for k, v in b.items() if k != "cache_control"} for b in params["messages"][0]["content"]]
+    # I cache_control restano: Claude Code li rispetta, e senza un punto di cache dopo le fonti
+    # ogni chiamata con un ultimo blocco diverso riscriverebbe tutto il prefisso.
+    content = params["messages"][0]["content"]
     return json.dumps({"type": "user", "message": {"role": "user", "content": content}}, ensure_ascii=False) + "\n"
 
 

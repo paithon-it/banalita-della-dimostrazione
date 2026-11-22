@@ -23,7 +23,9 @@ def test_explain_phase_builds_64_claude_requests():
 def test_dry_run_cli_prints_estimate():
     base = [sys.executable, str(ROOT / "scripts" / "run_phase.py"), "--phase", "explain", "--dry-run"]
     out = subprocess.run(base, capture_output=True, text=True, check=True).stdout
-    assert "explain: 64 chiamate da fare con Claude Code" in out
+    import re
+    m = re.search(r"explain: (\d+) chiamate da fare con Claude Code \((\d+) già fatte\)", out)
+    assert m and int(m[1]) + int(m[2]) == 64
     out = subprocess.run(base + ["--backend", "api"], capture_output=True, text=True, check=True).stdout
     assert "explain: 64 richieste" in out
 

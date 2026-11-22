@@ -143,3 +143,10 @@ critici → verifiche → secondo giudice → NLI → etichette dell'autore → 
   riusciti, 8,11 dollari a listino; la nota di Zhang in PDF vale circa 208.000 token. Nessuna
   chiamata ha letto la cache, perché le chiamate con lo stesso prefisso partivano insieme: da
   qui la prima chiamata da sola. Lunghezze entro i limiti (302 parole su 300 a L1).
+
+- 22/11/2026, durante le corse: i 64 giudizi delle spiegazioni di Claude non hanno letto la
+  cache (220.000 token riscritti ciascuno, 127 dollari a listino invece di circa 30): Claude
+  Code mette da solo il punto di cache in fondo al messaggio, e il codice toglieva il
+  `cache_control` dopo le fonti. Corretto da qui in poi (provato: la seconda chiamata legge il
+  documento dalla cache); i giudizi già fatti restano validi, la cache non cambia le risposte.
+  Il freno passa da 150 a 250 dollari a listino.

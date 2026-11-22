@@ -141,3 +141,10 @@ judgments → critics → verifications → second judge → NLI → author's la
   successful, 8.11 dollars at list price; Zhang's note as PDF is about 208,000 tokens. No call
   read the cache, because calls sharing a prefix started together: hence the first call runs
   alone. Lengths within the limits (302 words out of 300 at L1).
+
+- 22/11/2026, during the runs: the 64 judgments of Claude's explanations did not read the cache
+  (220,000 tokens rewritten each, 127 dollars at list price instead of about 30): Claude Code
+  places its own cache point at the end of the message, and the code was removing the
+  `cache_control` after the sources. Fixed from here on (tested: the second call reads the
+  document from the cache); the judgments already made remain valid, as the cache does not
+  change the answers. The brake goes from 150 to 250 dollars at list price.

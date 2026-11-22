@@ -19,7 +19,7 @@ from banalita.sources import ROOT
 
 # Con Claude Code non si paga a token: il tetto vale sul costo a listino dichiarato, come
 # freno al consumo dell'abbonamento (stima di tutte le fasi a listino: circa 90 dollari).
-CC_CAP = 150.0
+CC_CAP = 250.0
 
 KEY_FILE = Path.home() / ".config" / "banalita-della-dimostrazione" / "chiave.env"
 
