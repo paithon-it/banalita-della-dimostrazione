@@ -9,6 +9,8 @@ python3 -m venv "$RND/venv"
 pip install -q --no-cache-dir --upgrade pip
 pip install -q --no-cache-dir vllm "transformers>=4.45" sentencepiece pyyaml numpy
 pip install -q --no-cache-dir -e "$here/.." --no-deps
+# I kernel di FlashInfer già compilati: senza CUDA toolkit non si compilano al primo avvio.
+vllm download-kernels
 python -c "import vllm, torch; print('vllm', vllm.__version__, 'torch', torch.__version__, 'cuda', torch.cuda.is_available())"
 hf download "${QWEN:-cyankiwi/Qwen3.8-27B-AWQ-INT4}" > /dev/null
 hf download "${NLI:-MoritzLaurer/mDeBERTa-v3-base-xnli-multilingual-nli-2mil7}" > /dev/null

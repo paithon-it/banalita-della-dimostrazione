@@ -92,3 +92,9 @@ def test_context_leaves_room_for_prompt_and_full_output():
     """Il prompt di qwen_overview vale circa 17.000 token: deve restarne spazio per MAX_TOKENS."""
     from gpu.qwen import LLM_ARGS, MAX_TOKENS
     assert LLM_ARGS["max_model_len"] - MAX_TOKENS >= 20000
+
+
+def test_setup_installs_precompiled_kernels():
+    """Senza CUDA toolkit FlashInfer non può compilare i kernel al primo avvio (22/11/2026)."""
+    setup = (Path(__file__).parent.parent / "gpu" / "setup.sh").read_text()
+    assert "vllm download-kernels" in setup
