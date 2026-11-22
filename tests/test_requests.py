@@ -81,3 +81,7 @@ def test_arms_and_levels_as_in_spec():
                       2: ("uno studente di liceo", 600),
                       3: ("un laureato in matematica che non si occupa di teoria dei numeri", 1000),
                       4: ("un teorico dei numeri", 1500)}
+
+
+def test_custom_id_accepts_source_arm_with_digits():
+    assert parse_custom_id("critic-source_f2-L4-s00") == ("critic", "source_f2", 4, 0)

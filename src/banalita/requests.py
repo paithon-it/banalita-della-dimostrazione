@@ -27,7 +27,7 @@ EFFORT = "high"
 MAX_TOKENS = 32000
 PROMPTS = ROOT / "prompts"
 
-_ID = re.compile(r"^(?P<kind>[a-z0-9]+)-(?P<arm>[a-z_]+)-L(?P<level>[1-4])-s(?P<sample>\d{2})$")
+_ID = re.compile(r"^(?P<kind>[a-z0-9]+)-(?P<arm>[a-z0-9_]+)-L(?P<level>[1-4])-s(?P<sample>\d{2})$")
 
 
 def custom_id(kind: str, arm: str, level: int, sample: int) -> str:
