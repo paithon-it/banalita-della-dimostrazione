@@ -6,12 +6,28 @@ Le fasi costruiscono le loro richieste in `banalita.phases`; i risultati vanno i
 la spesa in `results/spend.jsonl` con il tetto di 60 dollari.
 """
 import argparse
+import os
 import sys
+from pathlib import Path
 
 from banalita.batch import run_batch
 from banalita.costs import Ledger
 from banalita.phases import PHASES
 from banalita.sources import ROOT
+
+
+KEY_FILE = Path.home() / ".config" / "banalita-della-dimostrazione" / "chiave.env"
+
+
+def _api_key() -> str | None:
+    """Dall'ambiente, o dal file scritto da scripts/imposta_chiave.sh (mai nel repository)."""
+    if os.environ.get("ANTHROPIC_API_KEY"):
+        return os.environ["ANTHROPIC_API_KEY"]
+    if KEY_FILE.exists():
+        for line in KEY_FILE.read_text().splitlines():
+            if line.startswith("ANTHROPIC_API_KEY="):
+                return line.split("=", 1)[1].strip()
+    return None
 
 
 def main(argv=None) -> int:
@@ -25,7 +41,7 @@ def main(argv=None) -> int:
     client = None
     if not args.dry_run:
         import anthropic
-        client = anthropic.Anthropic()
+        client = anthropic.Anthropic(api_key=_api_key())
     run_batch(requests, args.phase, Ledger(ROOT / "results" / "spend.jsonl"), client,
               ROOT / "results" / phase.out, poll_seconds=args.poll, input_tokens=phase.input_tokens,
               expected_output_tokens=phase.expected_output_tokens, dry_run=args.dry_run)
