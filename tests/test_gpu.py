@@ -77,3 +77,18 @@ def test_nli_pairs_only_contradicted_with_quote(tmp_path):
         {"text": "c", "label": "supported", "quote": "q", "kind": "proof"}], "coverage": []}
     (d / "judgments.jsonl").write_text(Result("judge-claude_full-L1-s00", "succeeded", "{}", parsed, {}, "end_turn").to_json() + "\n")
     assert contradicted_pairs(d) == [("judge-claude_full-L1-s00#0", "passo", "a")]
+
+
+def test_vllm_loads_text_only_and_fits_the_l4():
+    """22/11/2026: con il codificatore di immagini la passata di prova di vLLM andava in OOM
+    sulla L4 (pesi 19,07 GiB su 22). L'esperimento usa solo il testo."""
+    from gpu.qwen import LLM_ARGS
+    assert LLM_ARGS["language_model_only"] is True
+    assert LLM_ARGS["max_num_batched_tokens"] <= 2048
+    assert LLM_ARGS["max_num_seqs"] <= 2
+
+
+def test_context_leaves_room_for_prompt_and_full_output():
+    """Il prompt di qwen_overview vale circa 17.000 token: deve restarne spazio per MAX_TOKENS."""
+    from gpu.qwen import LLM_ARGS, MAX_TOKENS
+    assert LLM_ARGS["max_model_len"] - MAX_TOKENS >= 20000
