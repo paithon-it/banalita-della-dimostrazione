@@ -1,0 +1,7 @@
+I dati, i fatti di riferimento, le spiegazioni e i giudizi in `data/` e `results/` sono
+distribuiti con licenza Creative Commons Attribuzione - Condividi allo stesso modo 4.0
+Internazionale (CC BY-SA 4.0): https://creativecommons.org/licenses/by-sa/4.0/deed.it
+
+Le fonti (le note di Alpöge e di Zhang, le pagine di Lean e di Sutherland) non fanno parte
+del repository: restano dei loro autori, e lo script `scripts/fetch_sources.py` le scarica
+e ne controlla lo SHA-256.

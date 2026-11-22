@@ -1,0 +1,33 @@
+{
+  "note": "Copie scaricate il 22/11/2026. Le pagine F3a e F3b sono vive: vale la copia con questo hash.",
+  "sources": [
+    {
+      "id": "F1",
+      "url": "https://alpo.ge/remark.pdf",
+      "file": "f1-alpoge-remark.pdf",
+      "title": "Alpöge, nota del 20 novembre 2026",
+      "sha256": "3fc97784b71ddd44ff8aa0a177e99622a1c61b13cfa843a0989ee4a7a0cfeb8d"
+    },
+    {
+      "id": "F2",
+      "url": "https://www.ihes.fr/~rzhang/files/GRH%20note.pdf",
+      "file": "f2-zhang-grh-note.pdf",
+      "title": "Zhang, A preliminary note on Alpöge's proposed proof of GRH, versione del 22/11/2026 (73 pagine)",
+      "sha256": "2cbd7e9b693c753f6afa22251db9669c9652555a91cee0cdfbd37a8465ad2ad9"
+    },
+    {
+      "id": "F3a",
+      "url": "https://leanprover-community.github.io/blog/posts/riemann-hypothesis/",
+      "file": "f3a-lean-statement.html",
+      "title": "Dichiarazione congiunta di Lean e Mathlib, 21 novembre 2026",
+      "sha256": "f1bc87e6bf7aa9285fc0507377b850cfa166c9035c8fbc6394a182655f0a9a35"
+    },
+    {
+      "id": "F3b",
+      "url": "https://math.mit.edu/~drew/grh/",
+      "file": "f3b-sutherland-grh.html",
+      "title": "Sutherland, pagina dei controlli, copia del 22/11/2026 (aggiornata alle 04:35 UTC)",
+      "sha256": "01a43fc8defab818d878bfa8fd900d7563073db3dbc6f150ad73baec0fe388a7"
+    }
+  ]
+}

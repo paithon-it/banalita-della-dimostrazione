@@ -1,0 +1,21 @@
+[project]
+name = "banalita-della-dimostrazione"
+version = "0.0.1"
+description = "Quanto si perde, e che cosa diventa falso, quando un'AI spiega in modo semplice una dimostrazione dell'ipotesi di Riemann generalizzata."
+readme = "README.md"
+license = "MIT"
+requires-python = ">=3.11"
+dependencies = ["anthropic>=1.0", "pyyaml>=6", "numpy>=1.26"]
+
+[project.optional-dependencies]
+dev = ["pytest>=8"]
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/banalita"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
