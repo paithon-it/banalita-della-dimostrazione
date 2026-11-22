@@ -21,8 +21,10 @@ def test_explain_phase_builds_64_claude_requests():
 
 @needs_sources
 def test_dry_run_cli_prints_estimate():
-    out = subprocess.run([sys.executable, str(ROOT / "scripts" / "run_phase.py"), "--phase", "explain", "--dry-run"],
-                         capture_output=True, text=True, check=True).stdout
+    base = [sys.executable, str(ROOT / "scripts" / "run_phase.py"), "--phase", "explain", "--dry-run"]
+    out = subprocess.run(base, capture_output=True, text=True, check=True).stdout
+    assert "explain: 64 chiamate da fare con Claude Code" in out
+    out = subprocess.run(base + ["--backend", "api"], capture_output=True, text=True, check=True).stdout
     assert "explain: 64 richieste" in out
 
 
@@ -58,3 +60,15 @@ def test_judge2_is_sonnet_on_a_seeded_sample(tmp_path):
     assert list(a) == list(b) and len(a) == 10
     assert all(cid.startswith("judge2-") for cid in a)
     assert all(r["model"] == "claude-sonnet-5-5" for r in a.values())
+
+
+def test_load_results_prefers_succeeded_and_last(tmp_path):
+    from banalita.batch import Result
+    from banalita.phases import load_results
+    p = tmp_path / "r.jsonl"
+    rows = [Result("a", "errored", None, None, {}, None), Result("a", "succeeded", "ok", None, {}, "end_turn"),
+            Result("b", "succeeded", "primo", None, {}, "end_turn"), Result("b", "errored", None, None, {}, None)]
+    p.write_text("\n".join(r.to_json() for r in rows) + "\n")
+    got = {r.custom_id: r for r in load_results(p)}
+    assert len(load_results(p)) == 2
+    assert got["a"].text == "ok" and got["b"].text == "primo"

@@ -39,9 +39,19 @@ def build_explain() -> dict[str, dict]:
 
 
 def load_results(path: Path) -> list[Result]:
+    """Un risultato per custom_id: il riuscito se c'è (una ripresa può aver scritto prima un
+    errore), altrimenti l'ultimo."""
     if not Path(path).exists():
         return []
-    return [Result.from_json(l) for l in Path(path).read_text(encoding="utf-8").splitlines() if l.strip()]
+    best: dict[str, Result] = {}
+    for line in Path(path).read_text(encoding="utf-8").splitlines():
+        if not line.strip():
+            continue
+        r = Result.from_json(line)
+        prev = best.get(r.custom_id)
+        if prev is None or prev.status != "succeeded":
+            best[r.custom_id] = r
+    return list(best.values())
 
 
 def explanations(results_dir: Path = RESULTS) -> list[Result]:
