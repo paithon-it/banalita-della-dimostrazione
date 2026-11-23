@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 # Lancia una fase sulla L4: explain (32 spiegazioni di Qwen), critic (il critico Qwen), nli.
 # Uso, sulla macchina con la GPU, dalla copia del repository in $RND/repo:
-#   bash gpu/run.sh explain|critic|nli
+#   bash gpu/run.sh explain|critic|salvage|nli
 # Si rifiuta di partire se la GPU ha già processi al lavoro: la macchina è dell'autore, e un
 # altro lavoro in corso ha la precedenza.
 set -euo pipefail
@@ -18,6 +18,7 @@ cd "$here/.."
 case "${1:-}" in
   explain) python3 -m gpu.qwen explain ;;
   critic)  python3 -m gpu.qwen critic ;;
+  salvage) python3 -m gpu.qwen salvage ;;
   nli)     python3 -m gpu.nli_check ;;
-  *) echo "uso: bash gpu/run.sh explain|critic|nli" >&2; exit 1 ;;
+  *) echo "uso: bash gpu/run.sh explain|critic|salvage|nli" >&2; exit 1 ;;
 esac

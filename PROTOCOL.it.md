@@ -150,3 +150,16 @@ critici → verifiche → secondo giudice → NLI → etichette dell'autore → 
   `cache_control` dopo le fonti. Corretto da qui in poi (provato: la seconda chiamata legge il
   documento dalla cache); i giudizi già fatti restano validi, la cache non cambia le risposte.
   Il freno passa da 150 a 250 dollari a listino.
+
+- 22-23/11/2026, durante le corse: nella prima corsa di Qwen (12.000 token per uscita fra
+  ragionamento e risposta) 21 spiegazioni su 32 non sono arrivate alla risposta: 20 hanno
+  ragionato fino al limite (fra l'altro contando le parole una per una per stare nel tetto), una
+  ha cominciato la risposta ed è stata tagliata. Il ragionamento ora ha un tetto di 10.000 token
+  con il metodo del rapporto tecnico di Qwen3 (arXiv 2505.09388): al tetto si inserisce la frase
+  «Considering the limited time by the user, I have to give the solution based on the thinking
+  directly now.» con la chiusura del ragionamento, e il modello risponde (al più 4.500 token).
+  Le 11 riuscite avevano ragionato al più 9.937 token e restano come sono, perché con il tetto
+  sarebbero uscite uguali; delle 20 rimaste nel ragionamento si tengono i primi 10.000 token e si
+  completa la risposta (i primi 10.000 token di un campione sono un campione dei primi 10.000);
+  quella tagliata si rifà da capo (`gpu.qwen.salvage`). La prima corsa resta in
+  `results/explanations_qwen_run1.jsonl`. Lo stesso tetto vale per Qwen come critico.

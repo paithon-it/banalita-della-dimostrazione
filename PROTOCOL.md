@@ -148,3 +148,16 @@ judgments → critics → verifications → second judge → NLI → author's la
   `cache_control` after the sources. Fixed from here on (tested: the second call reads the
   document from the cache); the judgments already made remain valid, as the cache does not
   change the answers. The brake goes from 150 to 250 dollars at list price.
+
+- 22-23/11/2026, during the runs: in Qwen's first run (12,000 tokens per output for thinking and
+  answer together) 21 explanations out of 32 never reached the answer: 20 thought up to the
+  limit (among other things counting words one by one to stay within the cap), one started the
+  answer and was cut off. Thinking now has a budget of 10,000 tokens, with the method of the
+  Qwen3 technical report (arXiv 2505.09388): at the budget the sentence «Considering the limited
+  time by the user, I have to give the solution based on the thinking directly now.» is inserted
+  with the end of thinking, and the model answers (at most 4,500 tokens). The 11 successful ones
+  had thought at most 9,937 tokens and stay as they are, since with the budget they would have
+  come out the same; of the 20 left in their thinking, the first 10,000 tokens are kept and the
+  answer is completed (the first 10,000 tokens of a sample are a sample of the first 10,000); the
+  one cut off is redone from scratch (`gpu.qwen.salvage`). The first run stays in
+  `results/explanations_qwen_run1.jsonl`. The same budget applies to Qwen as a critic.

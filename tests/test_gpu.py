@@ -85,15 +85,67 @@ def test_vllm_loads_text_only_and_fits_the_l4():
     from gpu.qwen import LLM_ARGS
     assert LLM_ARGS["language_model_only"] is True
     assert LLM_ARGS["max_num_batched_tokens"] <= 1024
-    assert LLM_ARGS["max_model_len"] <= 24576  # 32.768 non entrava: 1,32 GiB di cache contro 0,98
+    assert LLM_ARGS["max_model_len"] <= 26624  # 32.768 non entrava: 1,32 GiB di cache contro 0,98
     assert LLM_ARGS["max_num_seqs"] <= 2
 
 
-def test_context_leaves_room_for_prompt_and_full_output():
-    """Il prompt di qwen_overview vale 11.798 token con il tokenizer di Qwen (misurato il
-    22/11/2026, L4): deve restare spazio per MAX_TOKENS."""
-    from gpu.qwen import LLM_ARGS, MAX_TOKENS
-    assert LLM_ARGS["max_model_len"] - MAX_TOKENS >= 11798
+def test_context_fits_prompt_thinking_and_answer():
+    """Il prompt di qwen_overview vale fino a 11.808 token con il tokenizer di Qwen (misurato
+    il 22/11/2026): dopo ci stanno il ragionamento al tetto, la frase di chiusura e la risposta."""
+    from gpu.qwen import ANSWER_TOKENS, LLM_ARGS, THINK_BUDGET
+    assert LLM_ARGS["max_model_len"] >= 11808 + THINK_BUDGET + 64 + ANSWER_TOKENS
+
+
+def test_budget_keeps_every_successful_first_run_answer():
+    """Nella prima corsa il ragionamento più lungo fra le risposte riuscite è di 9.937 token
+    (L3-s04): con un tetto più alto quelle risposte sarebbero uscite identiche."""
+    from gpu.qwen import THINK_BUDGET
+    assert THINK_BUDGET >= 9937
+
+
+class WordTok:
+    """Tokenizzatore finto: un token per parola."""
+
+    def __call__(self, text):
+        return {"input_ids": text.split()}
+
+    def decode(self, ids):
+        return " ".join(ids)
+
+
+def test_close_thinking_unfinished_gets_qwen_stop_instruction():
+    """La frase del rapporto tecnico di Qwen3 (arXiv 2505.09388), punto dopo </think> compreso."""
+    from gpu.qwen import EARLY_STOP, close_thinking
+    assert EARLY_STOP == ("\n\nConsidering the limited time by the user, I have to give the solution "
+                          "based on the thinking directly now.\n</think>.\n\n")
+    assert close_thinking("penso ancora", finished=False) == "penso ancora" + EARLY_STOP
+
+
+def test_close_thinking_finished_keeps_its_own_tag():
+    from gpu.qwen import close_thinking
+    assert close_thinking("penso</think>", finished=True) == "penso</think>\n\n"
+
+
+def test_truncate_tokens_keeps_the_first_n():
+    from gpu.qwen import truncate_tokens
+    assert truncate_tokens("a b c d", WordTok(), 2) == "a b"
+    assert truncate_tokens("a b", WordTok(), 5) == "a b"
+
+
+def test_salvage_plan_sorts_the_first_run():
+    """Le riuscite entro il tetto restano; il solo ragionamento si chiude e si completa; il resto
+    (ragionamento oltre il tetto ma perduto, o risposta tagliata) si rifà da capo."""
+    from banalita.batch import Result
+    from gpu.qwen import salvage_plan
+    runs = [
+        Result("keep", "succeeded", "r r", None, {"input_tokens": 9, "output_tokens": 6}, "stop"),
+        Result("long", "succeeded", "r", None, {"input_tokens": 9, "output_tokens": 8}, "stop"),
+        Result("think", "max_tokens", " ".join(["t"] * 10), None,
+               {"input_tokens": 9, "output_tokens": 10}, "length"),
+        Result("cut", "max_tokens", "r r", None, {"input_tokens": 9, "output_tokens": 10}, "length"),
+    ]
+    assert salvage_plan(runs, WordTok(), budget=5) == {
+        "keep": "keep", "long": "redo", "think": "continue", "cut": "redo"}
 
 
 def test_setup_installs_precompiled_kernels():
