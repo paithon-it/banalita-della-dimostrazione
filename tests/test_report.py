@@ -46,3 +46,11 @@ def test_report_builds_twelve_cells_and_writes_files(tmp_path):
     assert "P4" in (d / "report.md").read_text()
     with (d / "tables" / "cells.csv").open() as f:
         assert len(list(csv.DictReader(f))) == 12
+
+
+def test_report_says_not_testable(tmp_path, monkeypatch):
+    import analysis.report as rep
+    monkeypatch.setattr(rep, "verdicts", lambda table: {"P6": {"passa": None, "dettaglio": {}}})
+    monkeypatch.setattr(rep, "build_table", lambda d: ({}, {"giudizi": 0, "giudizi_scartati": 0}))
+    out = rep.write_report(tmp_path)
+    assert "| P6 | non valutabile |" in out.read_text()

@@ -161,3 +161,13 @@ judgments → critics → verifications → second judge → NLI → author's la
   answer is completed (the first 10,000 tokens of a sample are a sample of the first 10,000); the
   one cut off is redone from scratch (`gpu.qwen.salvage`). The first run stays in
   `results/explanations_qwen_run1.jsonl`. The same budget applies to Qwen as a critic.
+
+- 23/11/2026, early closure, by the author's decision. Complete: the `claude_full` and
+  `claude_overview` arms, with explanations, judgments, critic and verifications. Not done: the
+  `qwen_overview` arm (the first run stays in `results/explanations_qwen_run1.jsonl`; the salvage
+  with the budget was stopped before the end and produced no results), the second judge, the NLI
+  check, the Qwen critic and the author's labels. Consequences: P1-P5 are evaluated on Claude's
+  two arms, and means «over arms» are means over two arms; P6 cannot be evaluated, and its
+  feasible half is reported (`claude_full` against `claude_overview`). The judge's reliability is
+  checked neither by a second judge nor by a person, and the judge belongs to the same family as
+  the explainers: every number is the label of a single judge.

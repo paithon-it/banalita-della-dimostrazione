@@ -69,3 +69,14 @@ def test_p6_needs_both_comparisons():
         t[("claude_overview", level)] = Cell(60, 0.7, 3, 100, 0, 0)
         t[("qwen_overview", level)] = Cell(60, 0.6, 9, 100, 0, 0)
     assert verdicts(t)["P6"]["passa"]
+
+
+def test_p6_not_testable_without_the_open_model():
+    """Chiusura del 23/11/2026: senza il braccio di Qwen, P6 non passa né fallisce."""
+    t = {}
+    for level in (1, 2, 3, 4):
+        t[("claude_full", level)] = Cell(60, 0.8, 1, 100, 0, 0)
+        t[("claude_overview", level)] = Cell(60, 0.7, 3, 100, 0, 0)
+    v = verdicts(t)
+    assert v["P6"]["passa"] is None
+    assert v["P6"]["dettaglio"]["claude_full"] < v["P6"]["dettaglio"]["claude_overview"]

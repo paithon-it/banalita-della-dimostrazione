@@ -104,6 +104,9 @@ def verdicts(table: dict) -> dict[str, dict]:
         "P4": {"passa": bool(p4_hits), "dettaglio": p4_hits},
         "P5": {"passa": verified > 0 and intro / verified >= P5_SHARE,
                "dettaglio": (intro, verified)},
-        "P6": {"passa": by_arm["claude_overview"] < by_arm["qwen_overview"]
-                        and by_arm["claude_full"] < by_arm["claude_overview"], "dettaglio": by_arm},
+        # Senza il braccio del modello aperto P6 non si può valutare (chiusura del 23/11/2026).
+        "P6": {"passa": (by_arm["claude_overview"] < by_arm["qwen_overview"]
+                         and by_arm["claude_full"] < by_arm["claude_overview"])
+                        if any(("qwen_overview", l) in table for l in LEVELS) else None,
+               "dettaglio": by_arm},
     }

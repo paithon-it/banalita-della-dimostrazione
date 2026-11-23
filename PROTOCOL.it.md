@@ -163,3 +163,13 @@ critici → verifiche → secondo giudice → NLI → etichette dell'autore → 
   completa la risposta (i primi 10.000 token di un campione sono un campione dei primi 10.000);
   quella tagliata si rifà da capo (`gpu.qwen.salvage`). La prima corsa resta in
   `results/explanations_qwen_run1.jsonl`. Lo stesso tetto vale per Qwen come critico.
+
+- 23/11/2026, chiusura anticipata, su decisione dell'autore. Completi i bracci `claude_full` e
+  `claude_overview`: spiegazioni, giudizi, critico e verifiche. Non fatti: il braccio
+  `qwen_overview` (la prima corsa resta in `results/explanations_qwen_run1.jsonl`; il recupero con
+  il tetto è stato fermato prima della fine e non ha prodotto risultati), il secondo giudice, il
+  controllo NLI, il critico Qwen e le etichette dell'autore. Conseguenze: P1-P5 si valutano sui
+  due bracci di Claude, e le medie «dei bracci» sono medie di due bracci; P6 non è valutabile, e
+  se ne riporta la metà possibile (`claude_full` contro `claude_overview`). L'affidabilità del
+  giudice non è controllata né da un secondo giudice né da una persona, e il giudice è della
+  stessa famiglia degli spiegatori: ogni numero è l'etichetta di un giudice solo.

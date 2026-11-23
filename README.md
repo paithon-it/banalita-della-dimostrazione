@@ -16,7 +16,8 @@ each problem was introduced by the explanation, was already in the source, or is
 - **Design**: [`docs/design.it.md`](docs/design.it.md) (Italian).
 - **Reference facts**: [`data/facts.yaml`](data/facts.yaml), 30 facts with source, page and
   verbatim quote.
-- **Results**: `results/` (after the runs) and `results/report.md`.
+- **Results**: `results/report.md` and `results/tables/cells.csv`. The experiment closed on
+  23 November 2026 with Claude's arms only: see «Deviations» in the protocol.
 
 The experiment does not decide whether the proof is correct.
 

@@ -18,7 +18,8 @@ falso allarme.
 - **Progetto**: [`docs/design.it.md`](docs/design.it.md).
 - **Fatti di riferimento**: [`data/facts.yaml`](data/facts.yaml), 30 fatti con fonte, pagina e
   citazione letterale.
-- **Risultati**: `results/` (dopo le corse) e `results/report.md`.
+- **Risultati**: `results/report.md` e `results/tables/cells.csv`. L'esperimento si è chiuso il
+  23 novembre 2026 con i soli bracci di Claude: vedi «Deviazioni» nel protocollo.
 
 L'esperimento non decide se la dimostrazione è corretta.
 

@@ -80,7 +80,8 @@ def write_report(results_dir: Path = RESULTS) -> Path:
     lines = ["# Risultati", "", f"Giudizi usati: {notes['giudizi']}; scartati: {notes['giudizi_scartati']}.", "",
              "| Previsione | Esito | Dettaglio |", "|---|---|---|"]
     for k, d in v.items():
-        lines.append(f"| {k} | {'passa' if d['passa'] else 'non passa'} | {json.dumps(d['dettaglio'], default=str)} |")
+        esito = "non valutabile" if d["passa"] is None else ("passa" if d["passa"] else "non passa")
+        lines.append(f"| {k} | {esito} | {json.dumps(d['dettaglio'], default=str)} |")
     out = results_dir / "report.md"
     out.write_text("\n".join(lines) + "\n", encoding="utf-8")
     return out
