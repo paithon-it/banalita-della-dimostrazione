@@ -80,3 +80,17 @@ def test_p6_not_testable_without_the_open_model():
     v = verdicts(t)
     assert v["P6"]["passa"] is None
     assert v["P6"]["dettaglio"]["claude_full"] < v["P6"]["dettaglio"]["claude_overview"]
+
+
+def test_pooled_shares_with_wilson_intervals():
+    from banalita.metrics import pooled_shares
+    t = {}
+    for level in (1, 2, 3, 4):
+        t[("claude_full", level)] = Cell(60, 0.8, 1, 100, 2, 4)
+        t[("claude_overview", level)] = Cell(60, 0.7, 3, 100, 1, 2)
+    s = pooled_shares(t)
+    assert s["P3"][1][:2] == (4, 200)
+    lo, hi = s["P3"][1][2:]
+    assert lo < 0.02 < hi
+    assert s["P5"][:2] == (6, 12)
+    assert s["P6"]["claude_full"][:2] == (4, 400) and s["P6"]["claude_overview"][:2] == (12, 400)

@@ -1,0 +1,100 @@
+{
+ "note": "Analisi aggiunta dopo (23/11/2026). Affermazioni di claude_overview giudicate «contradicted» che dicono che cosa le fonti dello spiegatore contengono o non contengono: vere per il materiale che lo spiegatore aveva (F1 e la panoramica di F2), false per le quattro fonti del giudice. Scelte a mano, una per una; nell'analisi di sensibilità non contano come errori.",
+ "claims": [
+  {
+   "judgment": "judge-claude_overview-L3-s03",
+   "index": 46,
+   "text": "Le fonti non dicono che la comunità abbia già esaminato la formalizzazione: per ora la garanzia di correttezza poggia sul controllo di Lean"
+  },
+  {
+   "judgment": "judge-claude_overview-L3-s04",
+   "index": 27,
+   "text": "Le fonti non dettagliano questo passaggio."
+  },
+  {
+   "judgment": "judge-claude_overview-L3-s06",
+   "index": 13,
+   "text": "Le fonti non riportano verifiche indipendenti della formalizzazione."
+  },
+  {
+   "judgment": "judge-claude_overview-L4-s00",
+   "index": 9,
+   "text": "Le fonti non riferiscono altre verifiche indipendenti."
+  },
+  {
+   "judgment": "judge-claude_overview-L4-s00",
+   "index": 57,
+   "text": "Quanto alla verifica, oggi esiste soltanto la formalizzazione dichiarata da Alpöge, insieme a una lettura umana ancora preliminare."
+  },
+  {
+   "judgment": "judge-claude_overview-L3-s07",
+   "index": 19,
+   "text": "La panoramica di Zhang non entra nei dettagli di questo passaggio"
+  },
+  {
+   "judgment": "judge-claude_overview-L3-s07",
+   "index": 51,
+   "text": "Le fonti non dicono quale verifica indipendente del codice Lean sia stata fatta finora"
+  },
+  {
+   "judgment": "judge-claude_overview-L4-s01",
+   "index": 20,
+   "text": "Le fonti non riportano i dettagli di questo passaggio."
+  },
+  {
+   "judgment": "judge-claude_overview-L4-s04",
+   "index": 19,
+   "text": "Le fonti non dettagliano il passaggio dalla stima all'assenza di zeri"
+  },
+  {
+   "judgment": "judge-claude_overview-L4-s04",
+   "index": 54,
+   "text": "Le fonti non dicono se esperti indipendenti abbiano già verificato la formalizzazione Lean"
+  },
+  {
+   "judgment": "judge-claude_overview-L4-s04",
+   "index": 55,
+   "text": "Le fonti non dicono se l'enunciato formalizzato sia stato controllato contro la Congettura 1.1"
+  },
+  {
+   "judgment": "judge-claude_overview-L4-s02",
+   "index": 20,
+   "text": "Le fonti non danno ulteriori dettagli su questo passaggio."
+  },
+  {
+   "judgment": "judge-claude_overview-L4-s03",
+   "index": 10,
+   "text": "Le fonti non riferiscono verifiche indipendenti del codice."
+  },
+  {
+   "judgment": "judge-claude_overview-L4-s05",
+   "index": 11,
+   "text": "Le fonti non dicono nulla su verifiche indipendenti della formalizzazione"
+  },
+  {
+   "judgment": "judge-claude_overview-L4-s05",
+   "index": 21,
+   "text": "Il testo della Sezione 2 di Zhang non è tra le fonti"
+  },
+  {
+   "judgment": "judge-claude_overview-L4-s06",
+   "index": 7,
+   "text": "Le fonti non riferiscono di controlli indipendenti sul fatto che l'enunciato formalizzato coincida con quello voluto."
+  },
+  {
+   "judgment": "judge-claude_overview-L4-s06",
+   "index": 19,
+   "text": "Il dettaglio di questo passaggio non compare negli estratti a disposizione."
+  },
+  {
+   "judgment": "judge-claude_overview-L4-s07",
+   "index": 8,
+   "text": "Le fonti non riferiscono verifiche indipendenti al di là della nota di Alpöge e di quella di Zhang"
+  },
+  {
+   "judgment": "judge-claude_overview-L4-s07",
+   "index": 17,
+   "text": "Il testo a disposizione non descrive il passaggio dalla stima all'esclusione degli zeri"
+  }
+ ]
+}

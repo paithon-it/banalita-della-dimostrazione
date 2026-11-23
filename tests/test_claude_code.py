@@ -1,3 +1,4 @@
+import pytest
 import json
 
 from banalita.batch import Result
@@ -122,3 +123,24 @@ def test_first_call_of_each_prefix_runs_alone(tmp_path):
     last_block_changed = {**PARAMS, "messages": [{"role": "user", "content": PARAMS["messages"][0]["content"][:-1]
                                                  + [{"type": "text", "text": "Diverso."}]}]}
     assert prefix_key(PARAMS) == prefix_key(last_block_changed)
+
+
+def _init_line(**over):
+    base = {"type": "system", "subtype": "init", "tools": [], "mcp_servers": [], "skills": [],
+            "plugins": [{"name": "cc-plugin-telemetry", "path": "builtin", "source": "cc-plugin-telemetry@builtin"}]}
+    base.update(over)
+    return json.dumps(base) + "\n"
+
+
+def test_isolated_init_passes():
+    """La prova del 23/11/2026: niente strumenti, server MCP né skill, solo plugin interni."""
+    stdout = _init_line() + _result_line().split("\n", 1)[1]
+    assert parse_output("c1", stdout).status == "succeeded"
+
+
+@pytest.mark.parametrize("over", [{"tools": ["Bash"]}, {"mcp_servers": [{"name": "paithon"}]},
+                                  {"skills": ["superpowers:brainstorming"]},
+                                  {"plugins": [{"name": "superpowers", "path": "/home/x/.claude/plugins/sp"}]}])
+def test_init_with_tools_or_user_plugins_is_contaminated(over):
+    stdout = _init_line(**over) + _result_line().split("\n", 1)[1]
+    assert parse_output("c1", stdout).status == "contaminated"

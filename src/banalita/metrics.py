@@ -110,3 +110,19 @@ def verdicts(table: dict) -> dict[str, dict]:
                         if any(("qwen_overview", l) in table for l in LEVELS) else None,
                "dettaglio": by_arm},
     }
+
+
+def pooled_shares(table: dict) -> dict:
+    """Le quote aggregate delle previsioni con il loro intervallo di Wilson al 95% (protocollo, § 7):
+    (eventi, totale, basso, alto) per livello (P3), per il critico (P5) e per braccio (P6)."""
+    def share(e: int, n: int) -> tuple:
+        return (e, n, *wilson(e, n))
+    def total(keys, attr_e, attr_n):
+        return (sum(getattr(table[k], attr_e) for k in keys if k in table),
+                sum(getattr(table[k], attr_n) for k in keys if k in table))
+    return {
+        "P3": {l: share(*total([(a, l) for a in ARMS], "errors", "claims")) for l in LEVELS},
+        "P5": share(*total([(a, l) for a in ARMS for l in (1, 2)], "alerts_introduced", "alerts_verified")),
+        "P6": {a: share(*total([(a, l) for l in LEVELS], "errors", "claims"))
+               for a in ARMS if any((a, l) in table for l in LEVELS)},
+    }

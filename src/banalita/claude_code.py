@@ -58,13 +58,23 @@ def build_stdin(params: dict) -> str:
     return json.dumps({"type": "user", "message": {"role": "user", "content": content}}, ensure_ascii=False) + "\n"
 
 
+def isolation_problems(init: dict) -> list[str]:
+    """Che cosa dice l'evento iniziale di Claude Code: una chiamata isolata non ha strumenti, server
+    MCP né skill, e carica solo i plugin interni (prova del 23/11/2026)."""
+    problems = [k for k in ("tools", "mcp_servers", "skills") if init.get(k)]
+    problems += [f"plugin {p.get('name')}" for p in init.get("plugins") or [] if p.get("path") != "builtin"]
+    return problems
+
+
 def parse_output(custom_id: str, stdout: str) -> Result:
-    final = None
+    final, init = None, {}
     for line in stdout.splitlines():
         try:
             d = json.loads(line)
         except json.JSONDecodeError:
             continue
+        if d.get("type") == "system" and d.get("subtype") == "init":
+            init = d
         if d.get("type") == "result":
             final = d
     if final is None or final.get("is_error") or final.get("subtype") != "success":
@@ -75,7 +85,8 @@ def parse_output(custom_id: str, stdout: str) -> Result:
              ("input_tokens", "output_tokens", "cache_read_input_tokens", "cache_creation_input_tokens")}
     text = final.get("result") or ""
     parsed = final.get("structured_output")
-    status = "contaminated" if any(w in text.lower() for w in SUSPICIOUS) else "succeeded"
+    leaked = any(w in text.lower() for w in SUSPICIOUS) or isolation_problems(init)
+    status = "contaminated" if leaked else "succeeded"
     return Result(custom_id, status, text, parsed, usage, final.get("stop_reason"))
 
 

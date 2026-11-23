@@ -49,3 +49,10 @@ def test_numbers_are_words_without_letters():
 def test_empty_text_raises_value_error():
     with pytest.raises(ValueError):
         gulpease("   ")
+
+
+def test_single_letter_can_count_as_sentence_end():
+    """Analisi di sensibilità del 23/11/2026: nei testi tecnici «fino a x.» chiude la frase."""
+    assert counts("Vale fino a x. Poi basta.").sentences == 1
+    assert counts("Vale fino a x. Poi basta.", letter_ends_sentence=True).sentences == 2
+    assert gulpease("Vale fino a x. Poi basta.", letter_ends_sentence=True) > gulpease("Vale fino a x. Poi basta.")

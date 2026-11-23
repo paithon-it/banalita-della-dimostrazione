@@ -32,7 +32,7 @@ class Counts:
     sentences: int
 
 
-def _sentences(text: str) -> int:
+def _sentences(text: str, letter_ends_sentence: bool = False) -> int:
     n = 0
     last_end = 0
     for m in _END.finditer(text):
@@ -40,7 +40,7 @@ def _sentences(text: str) -> int:
         token = re.split(r"['’]", token)[-1]
         if m.group(1) == ".":
             word = token.lower()
-            if len(word) == 1 and word.isalpha():
+            if len(word) == 1 and word.isalpha() and not letter_ends_sentence:
                 continue
             if word in ABBREVIAZIONI:
                 continue
@@ -51,15 +51,17 @@ def _sentences(text: str) -> int:
     return n
 
 
-def counts(text: str) -> Counts:
+def counts(text: str, letter_ends_sentence: bool = False) -> Counts:
+    """`letter_ends_sentence`: il punto dopo una lettera sola chiude la frase (una variabile, «fino a x.»)
+    invece di essere un'iniziale; è l'analisi di sensibilità del 23/11/2026, non la regola del protocollo."""
     words = _WORD.findall(text)
     words = [w for w in words if any(ch.isalnum() for ch in w)]
     letters = sum(1 for ch in text if ch.isalpha())
-    return Counts(letters=letters, words=len(words), sentences=_sentences(text))
+    return Counts(letters=letters, words=len(words), sentences=_sentences(text, letter_ends_sentence))
 
 
-def gulpease(text: str) -> float:
-    c = counts(text)
+def gulpease(text: str, letter_ends_sentence: bool = False) -> float:
+    c = counts(text, letter_ends_sentence)
     if c.words == 0:
         raise ValueError("testo senza parole")
     return 89 + (300 * c.sentences - 10 * c.letters) / c.words

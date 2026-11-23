@@ -171,3 +171,16 @@ judgments → critics → verifications → second judge → NLI → author's la
   feasible half is reported (`claude_full` against `claude_overview`). The judge's reliability is
   checked neither by a second judge nor by a person, and the judge belongs to the same family as
   the explainers: every number is the label of a single judge.
+
+- 23/11/2026, after the closure: an independent code review recomputed every cell from scratch
+  (they match). Four additions follow. (a) Pooled shares with their Wilson interval, which § 7
+  required and the report omitted. (b) Two sensitivity analyses added afterwards, which are not
+  predictions: not counting as errors the 19 claims of `claude_overview` about its own material
+  (`data/posthoc/meta_claims.json`), P3 passes and the gap between the two arms shrinks (0.40%
+  against 0.64%, overlapping intervals); counting a period after a single letter as a sentence
+  end, P1 fails (55.82 at L3, 56.16 at L4). (c) P5 counts only the main critic. (d) A probe call
+  with the same arguments and environment as the runs: no tools, MCP servers or skills, only
+  Claude Code's built-in plugins, and 578 input tokens for a prompt of about twenty words, so
+  neither CLAUDE.md nor memory enters the context; from now on the init event is checked on
+  every call. The Wilson intervals pool claims and ignore that they sit in eight explanations
+  per cell: they are narrower than they should be.

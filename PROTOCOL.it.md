@@ -173,3 +173,17 @@ critici → verifiche → secondo giudice → NLI → etichette dell'autore → 
   se ne riporta la metà possibile (`claude_full` contro `claude_overview`). L'affidabilità del
   giudice non è controllata né da un secondo giudice né da una persona, e il giudice è della
   stessa famiglia degli spiegatori: ogni numero è l'etichetta di un giudice solo.
+
+- 23/11/2026, dopo la chiusura: revisione indipendente del codice, che ha ricalcolato da zero
+  tutte le celle (coincidono). Ne vengono quattro aggiunte. (a) Le quote aggregate con il loro
+  intervallo di Wilson, che il § 7 chiedeva e il resoconto ometteva. (b) Due analisi di
+  sensibilità aggiunte dopo, che non sono previsioni: senza contare come errori le 19
+  affermazioni di `claude_overview` sul proprio materiale (`data/posthoc/meta_claims.json`), P3
+  passa e il distacco fra i due bracci si riduce (0,40% contro 0,64%, intervalli sovrapposti);
+  con il punto dopo una lettera sola contato come fine della frase, P1 non passa (55,82 a L3,
+  56,16 a L4). (c) P5 conta solo il critico principale. (d) Una chiamata di prova con gli stessi
+  argomenti e lo stesso ambiente delle corse: nessuno strumento, server MCP o skill, solo i
+  plugin interni di Claude Code, e 578 token d'ingresso per un prompt di una ventina di parole,
+  quindi né CLAUDE.md né la memoria entrano nel contesto; da qui in poi l'evento iniziale si
+  controlla a ogni chiamata. Gli intervalli di Wilson mettono insieme le affermazioni e ignorano
+  che stanno in otto spiegazioni per cella: sono più stretti del vero.

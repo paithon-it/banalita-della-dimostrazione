@@ -50,7 +50,41 @@ def test_report_builds_twelve_cells_and_writes_files(tmp_path):
 
 def test_report_says_not_testable(tmp_path, monkeypatch):
     import analysis.report as rep
-    monkeypatch.setattr(rep, "verdicts", lambda table: {"P6": {"passa": None, "dettaglio": {}}})
-    monkeypatch.setattr(rep, "build_table", lambda d: ({}, {"giudizi": 0, "giudizi_scartati": 0}))
+    fake = {k: {"passa": True, "dettaglio": [0, 0, 0, 0]} for k in ("P1", "P2", "P3", "P4", "P5")}
+    fake["P6"] = {"passa": None, "dettaglio": {}}
+    monkeypatch.setattr(rep, "verdicts", lambda table: fake)
+    monkeypatch.setattr(rep, "build_table", lambda d, **kw: ({}, {"giudizi": 0, "giudizi_scartati": 0}))
     out = rep.write_report(tmp_path)
     assert "| P6 | non valutabile |" in out.read_text()
+
+
+def test_p5_counts_only_the_main_critic(tmp_path):
+    """Le verifiche del critico Qwen (verifyq) non entrano in P5, che riguarda il critico principale."""
+    d = tmp_path / "results"
+    d.mkdir()
+    _fake_results(d)
+    ver = {"verdicts": [{"index": 0, "category": "false_alarm", "reason": "r", "source": "F1", "page": 1}]}
+    extra = Result(custom_id("verifyq", "claude_full", 1, 0), "succeeded", json.dumps(ver), ver, {}, "end_turn")
+    with (d / "verifications.jsonl").open("a") as f:
+        f.write(extra.to_json() + "\n")
+    table, _ = build_table(d)
+    assert table[("claude_full", 1)].alerts_verified == 1
+
+
+def test_build_table_can_leave_listed_claims_out_of_the_errors(tmp_path):
+    d = tmp_path / "results"
+    d.mkdir()
+    _fake_results(d)
+    jid = custom_id("judge", "claude_full", 1, 0)
+    table, _ = build_table(d, exclude=frozenset({(jid, 1)}))
+    assert table[("claude_full", 1)].errors == 0
+    assert table[("claude_full", 2)].errors == 1
+
+
+def test_report_has_intervals_and_posthoc_sections(tmp_path):
+    d = tmp_path / "results"
+    d.mkdir()
+    _fake_results(d)
+    text = write_report(d).read_text()
+    assert "Quote con intervallo di Wilson al 95%" in text
+    assert "Analisi aggiunte dopo" in text
